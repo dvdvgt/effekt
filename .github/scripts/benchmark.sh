@@ -1,4 +1,3 @@
-# Source: https://github.com/effekt-lang/effekt-plots/blob/6972302fc681f1d5dff6028124ec5fedf7a8a5f3/generate/benchmark_config_js.txt
 set -e
 benchmarks=(
 #   "are_we_fast_yet/bounce 7283"
@@ -17,13 +16,13 @@ benchmarks=(
 #  "duality_of_compilation/lookup_tree 1024"
 #  "duality_of_compilation/match_options 1024"
 #  "duality_of_compilation/sum_range 1024"
-  "effect_handlers_bench/countdown 3000000"
-  "effect_handlers_bench/nqueens 12"
-  "effect_handlers_bench/resume_nontail 2048"
-  "effect_handlers_bench/iterator 2796203"
-  "effect_handlers_bench/parsing_dollars 2428"
-  "effect_handlers_bench/product_early 8192"
-  "effect_handlers_bench/tree_explore 20"
+  "effect_handlers_bench/countdown 16777216"
+  "effect_handlers_bench/iterator 22369622"
+  "effect_handlers_bench/nqueens 11"
+  "effect_handlers_bench/parsing_dollars 7283"
+  "effect_handlers_bench/product_early 32768"
+  "effect_handlers_bench/resume_nontail 1366"
+  "effect_handlers_bench/tree_explore 14"
   "effect_handlers_bench/triples 256"
 )
 out_dir="results"
