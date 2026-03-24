@@ -25,6 +25,12 @@ benchmarks=(
   "effect_handlers_bench/tree_explore 14"
   "effect_handlers_bench/triples 256"
 )
+#benchmarks=()
+#while IFS= read -r line || [[ -n "$line" ]]; do
+#  [[ "$line" =~ ^\s*# ]] && continue  # skip comments
+#  [[ "$line" =~ ^\s*$ ]] && continue  # skip blank lines
+#  benchmarks+=("$line")
+#done < "$config_file"
 out_dir="results"
 backends=(
   "js"
