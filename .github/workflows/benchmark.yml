@@ -46,19 +46,50 @@ jobs:
             });
             core.setOutput('feature_sha', pr.data.head.sha);
             core.setOutput('baseline_sha', pr.data.base.sha);
+      
+      - name: Setup Effekt development environment
+      - uses: ./.github/actions/setup-effekt
+        with:
+          install-dependencies: 'true'
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.sha }}
+          fetch-depth: 0
+          submodules: true
+
+      - name: Run benchmarks
+        id: bench
+        env:
+          FEATURE_SHA: ${{ steps.pr_shas.outputs.feature_sha }}
+          BASELINE_SHA: ${{ steps.pr_shas.outputs.baseline_sha }}
+        run: bash .github/scripts/benchmark.sh
 
       - name: Comment results
         uses: actions/github-script@v8
+        if: ${{ always() }}
         env:
           FEATURE_SHA: ${{ steps.pr_shas.outputs.feature_sha }}
           BASELINE_SHA: ${{ steps.pr_shas.outputs.baseline_sha }}
         with:
           script: |
+            const fs = require('fs');
+
             const featureSha = process.env.FEATURE_SHA;
             const baselineSha = process.env.BASELINE_SHA;
+            let body;
+            body = `## Benchmark Results: $featureSha vs $baselineSha (baseline)\n`;
+            try {
+              const log = fs.readFileSync('results/benchmark.log', 'utf8');
+              body = body + `<details><summary>Full log</summary>\n\n\`\`\`\n${log}\n\`\`\`\n\n</details>`;
+            } catch (e) {
+              body = body + `❌ Benchmark failed or produced no output. Check the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).`;
+            }
+
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `Comparing ${featureSha} to ${baselineSha}`
+              body
             })
