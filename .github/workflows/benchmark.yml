@@ -59,6 +59,9 @@ jobs:
         with:
           install-dependencies: 'true'
 
+      - name: Install Hyperfine
+        run: sudo apt install -y hyperfine
+
       - name: Run benchmarks
         id: bench
         env:
@@ -79,7 +82,7 @@ jobs:
             const featureSha = process.env.FEATURE_SHA;
             const baselineSha = process.env.BASELINE_SHA;
             let body;
-            body = `## Benchmark Results: $featureSha vs $baselineSha (baseline)\n`;
+            body = `## Benchmark Results: ${featureSha} vs ${baselineSha} (baseline)\n`;
             try {
               const log = fs.readFileSync('results/benchmark.log', 'utf8');
               body = body + `<details><summary>Full log</summary>\n\n\`\`\`\n${log}\n\`\`\`\n\n</details>`;
