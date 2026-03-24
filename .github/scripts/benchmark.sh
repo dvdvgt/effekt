@@ -1,36 +1,12 @@
 set -e
-benchmarks=(
-#   "are_we_fast_yet/bounce 7283"
-#   "are_we_fast_yet/list_tail 42"
-#   "are_we_fast_yet/mandelbrot 171"
-#   "are_we_fast_yet/nbody 131072"
-#   "are_we_fast_yet/permute 8"
-#   "are_we_fast_yet/queens 21"
-#   "are_we_fast_yet/sieve 1048576"
-#   "are_we_fast_yet/storage 512"
-#   "are_we_fast_yet/towers 21"
-#  "duality_of_compilation/erase_unused 3642"
-#  "duality_of_compilation/factorial_accumulator 8388608"
-#  "duality_of_compilation/fibonacci_recursive 31"
-#  "duality_of_compilation/iterate_increment 8388608"
-#  "duality_of_compilation/lookup_tree 1024"
-#  "duality_of_compilation/match_options 1024"
-#  "duality_of_compilation/sum_range 1024"
-  "effect_handlers_bench/countdown 16777216"
-  "effect_handlers_bench/iterator 22369622"
-  "effect_handlers_bench/nqueens 11"
-  "effect_handlers_bench/parsing_dollars 7283"
-  "effect_handlers_bench/product_early 32768"
-  "effect_handlers_bench/resume_nontail 1366"
-  "effect_handlers_bench/tree_explore 14"
-  "effect_handlers_bench/triples 256"
-)
-#benchmarks=()
-#while IFS= read -r line || [[ -n "$line" ]]; do
-#  [[ "$line" =~ ^\s*# ]] && continue  # skip comments
-#  [[ "$line" =~ ^\s*$ ]] && continue  # skip blank lines
-#  benchmarks+=("$line")
-#done < "$config_file"
+
+benchmarks=()
+while IFS= read -r line || [[ -n "$line" ]]; do
+ [[ "$line" =~ ^\s*# ]] && continue  # skip comments
+ [[ "$line" =~ ^\s*$ ]] && continue  # skip blank lines
+ benchmarks+=("$line")
+done < "$CONFIG_FILE"
+
 out_dir="results"
 backends=(
   "js"
@@ -75,8 +51,6 @@ for benchmark in "${benchmarks[@]}"; do
   filename=${path##*/}
     hyperfine \
       --warmup 1 \
-      --export-markdown "$out_dir/$filename.md" \
-      --export-csv "$out_dir/$filename.csv" \
       --export-json "$out_dir/$filename.json" \
       --time-unit millisecond \
       -m 10 \

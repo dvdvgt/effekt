@@ -41,8 +41,6 @@ def main() -> None:
         sys.exit(1)
 
     lines = [
-        "## Benchmark Results",
-        "",
         "| Benchmark | Baseline (ms) | Feature (ms) | Ratio |",
         "|-----------|--------------|--------------|-------|",
         *[f"| `{name}` | {b} | {f} | {ratio:.3f} |" for name, b, f, ratio in rows],

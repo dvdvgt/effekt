@@ -67,6 +67,7 @@ jobs:
         env:
           FEATURE_SHA: ${{ steps.pr_shas.outputs.feature_sha }}
           BASELINE_SHA: ${{ steps.pr_shas.outputs.baseline_sha }}
+          CONFIG_FILE: examples/benchmarks/config_js.txt
         run: bash .github/scripts/benchmark.sh
 
       - name: Aggregate results
