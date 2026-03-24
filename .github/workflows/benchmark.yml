@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   benchmark:
-    if: 
+    if:
       ${{
         github.event.issue.pull_request &&
         contains(github.event.comment.body, '/benchmark') &&
@@ -34,13 +34,31 @@ jobs:
               content: '+1'
             });
 
-      - name: Comment results
+      - name: Get PR SHAs
+        id: pr_shas
         uses: actions/github-script@v8
         with:
           script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            core.setOutput('feature_sha', pr.data.head.sha);
+            core.setOutput('baseline_sha', pr.data.base.sha);
+
+      - name: Comment results
+        uses: actions/github-script@v8
+        env:
+          FEATURE_SHA: ${{ steps.pr_shas.outputs.feature_sha }}
+          BASELINE_SHA: ${{ steps.pr_shas.outputs.baseline_sha }}
+        with:
+          script: |
+            const featureSha = process.env.FEATURE_SHA;
+            const baselineSha = process.env.BASELINE_SHA;
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: 'Benchmark Results'
+              body: `Comparing ${featureSha} to ${baselineSha}`
             })
