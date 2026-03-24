@@ -69,7 +69,6 @@ for benchmark in "${benchmarks[@]}"; do
   filename=${path##*/}
     hyperfine \
       --warmup 1 \
-      --show-output \
       --export-markdown "$out_dir/$filename.md" \
       --export-csv "$out_dir/$filename.csv" \
       --export-json "$out_dir/$filename.json" \
