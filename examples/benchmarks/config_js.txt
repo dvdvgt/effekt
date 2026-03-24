@@ -29,4 +29,4 @@ input_output/word_count_ascii 8000
 input_output/word_count_utf8 15000
 input_output/dyck_one 800
 input_output/number_matrix 700
-input_output/financial_format 15000 
+input_output/financial_format 15000
