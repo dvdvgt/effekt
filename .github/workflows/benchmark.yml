@@ -91,7 +91,7 @@ jobs:
             try {
               const summary = fs.readFileSync('results/summary.md', 'utf8')
               body = body + summary + "\n"
-              const log = fs.readFileSync('results/benchmark', 'utf8');
+              const log = fs.readFileSync('results/benchmark.log', 'utf8');
               body = body + `<details><summary>Full log</summary>\n\n\`\`\`\n${log}\n\`\`\`\n\n</details>`;
             } catch (e) {
               body = body + `❌ Benchmark failed or produced no output. Check the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).`;
