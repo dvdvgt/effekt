@@ -50,29 +50,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ steps.pr.outputs.feature_sha }}
           fetch-depth: 0
           submodules: true
       
-      # - name: Setup Effekt development environment
-      #   uses: ./.github/actions/setup-effekt
-      #   with:
-      #     install-dependencies: 'true'
+      - name: Setup Effekt development environment
+        uses: ./.github/actions/setup-effekt
+        with:
+          install-dependencies: 'true'
 
-      # - name: Install Hyperfine
-      #   run: |
-      #     sudo apt install -y hyperfine
+      - name: Install Hyperfine
+        run: |
+          sudo apt install -y hyperfine
 
-      # - name: Run benchmarks
-      #   id: bench
-      #   env:
-      #     FEATURE_SHA: ${{ steps.pr_shas.outputs.feature_sha }}
-      #     BASELINE_SHA: ${{ steps.pr_shas.outputs.baseline_sha }}
-      #   run: bash .github/scripts/benchmark.sh
+      - name: Run benchmarks
+        id: bench
+        env:
+          FEATURE_SHA: ${{ steps.pr_shas.outputs.feature_sha }}
+          BASELINE_SHA: ${{ steps.pr_shas.outputs.baseline_sha }}
+        run: bash .github/scripts/benchmark.sh
 
       - name: Aggregate results
         run: |
-          ls .github/
+          git checkout main
           python3 .github/scripts/aggregate.py results/ results/summary.md
 
       - name: Comment results
@@ -91,7 +90,7 @@ jobs:
             body = `## Benchmark Results: ${featureSha} vs ${baselineSha} (baseline)\n`;
             try {
               const summary = fs.readFileSync('results/summary.md', 'utf8')
-              bode = body + summary + "\n"
+              body = body + summary + "\n"
               const log = fs.readFileSync('results/benchmark', 'utf8');
               body = body + `<details><summary>Full log</summary>\n\n\`\`\`\n${log}\n\`\`\`\n\n</details>`;
             } catch (e) {
