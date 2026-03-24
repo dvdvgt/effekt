@@ -71,7 +71,7 @@ jobs:
         run: bash .github/scripts/benchmark.sh
 
       - name: Aggregate results
-        run: python3 .github/scripts/aggregate.py results/ results/summary.md
+        run: python3 .github/scripts/aggregate_benchmarks.py results/ results/summary.md
 
       - name: Comment results
         uses: actions/github-script@v8
