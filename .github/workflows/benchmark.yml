@@ -60,7 +60,8 @@ jobs:
           install-dependencies: 'true'
 
       - name: Install Hyperfine
-        run: sudo apt install -y hyperfine
+        run: |
+          sudo apt install -y hyperfine
 
       - name: Run benchmarks
         id: bench
@@ -68,6 +69,9 @@ jobs:
           FEATURE_SHA: ${{ steps.pr_shas.outputs.feature_sha }}
           BASELINE_SHA: ${{ steps.pr_shas.outputs.baseline_sha }}
         run: bash .github/scripts/benchmark.sh
+
+      - name: Aggregate results
+        run: python3 .github/scripts/aggregate.py results/ results/summary.md
 
       - name: Comment results
         uses: actions/github-script@v8
@@ -84,7 +88,9 @@ jobs:
             let body;
             body = `## Benchmark Results: ${featureSha} vs ${baselineSha} (baseline)\n`;
             try {
-              const log = fs.readFileSync('results/benchmark.log', 'utf8');
+              const summary = fs.readFileSync('results/summary.md', 'utf8')
+              bode = body + summary + "\n"
+              const log = fs.readFileSync('results/benchmark', 'utf8');
               body = body + `<details><summary>Full log</summary>\n\n\`\`\`\n${log}\n\`\`\`\n\n</details>`;
             } catch (e) {
               body = body + `❌ Benchmark failed or produced no output. Check the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).`;
