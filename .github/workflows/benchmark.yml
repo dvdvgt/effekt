@@ -48,7 +48,7 @@ jobs:
             core.setOutput('baseline_sha', pr.data.base.sha);
       
       - name: Setup Effekt development environment
-      - uses: ./.github/actions/setup-effekt
+        uses: ./.github/actions/setup-effekt
         with:
           install-dependencies: 'true'
 
