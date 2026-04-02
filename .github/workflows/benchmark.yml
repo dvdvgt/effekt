@@ -73,7 +73,28 @@ jobs:
       - name: Aggregate results
         run: |
           git checkout main
+          pip3 install scipy
           python3 .github/scripts/aggregate.py results/ results/summary.md
+
+      - name: Write job summary
+        if: ${{ always() }}
+        env:
+          FEATURE_SHA: ${{ steps.pr_shas.outputs.feature_sha }}
+          BASELINE_SHA: ${{ steps.pr_shas.outputs.baseline_sha }}
+        run: |
+          echo "## Benchmark Results: ${FEATURE_SHA} vs ${BASELINE_SHA} (baseline)" >> $GITHUB_STEP_SUMMARY
+          if [ -f results/summary.md ]; then
+            cat results/summary.md >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -f results/benchmark.log ]; then
+            echo "<details><summary>Full log</summary>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat results/benchmark.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "</details>" >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Comment results
         uses: actions/github-script@v8
@@ -84,23 +105,20 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-
             const featureSha = process.env.FEATURE_SHA;
             const baselineSha = process.env.BASELINE_SHA;
-            let body;
-            body = `## Benchmark Results: ${featureSha} vs ${baselineSha} (baseline)\n`;
+            const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+            let body = `## Benchmark Results: ${featureSha} vs ${baselineSha} (baseline)\n`;
             try {
-              const summary = fs.readFileSync('results/summary.md', 'utf8')
-              body = body + summary + "\n"
-              const log = fs.readFileSync('results/benchmark.log', 'utf8');
-              body = body + `<details><summary>Full log</summary>\n\n\`\`\`\n${log}\n\`\`\`\n\n</details>`;
+              const summary = fs.readFileSync('results/summary.md', 'utf8');
+              body += summary + '\n';
             } catch (e) {
-              body = body + `❌ Benchmark failed or produced no output. Check the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).`;
+              body += `❌ Benchmark failed or produced no output.`;
             }
-
+            body += `\n📋 [Full log in job summary](${runUrl})`;
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body
-            })
+            });
