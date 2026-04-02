@@ -111,8 +111,8 @@ def write_summary(rows: list[BenchmarkRow], sig_rows: list[BenchmarkRow], path: 
 
 def main() -> None:
     results_dir = sys.argv[1] if len(sys.argv) > 1 else "results"
-    summary_file = sys.argv[2] if len(sys.argv) > 2 else os.path.join(results_dir, "summary.md")
-    results_file = sys.argv[2] if len(sys.argv) > 2 else os.path.join(results_dir, "results.md")
+    summary_file = os.path.join(results_dir, "summary.md")
+    results_file = os.path.join(results_dir, "results.md")
 
     rows = load_all_benchmarks(results_dir)
     if not rows:

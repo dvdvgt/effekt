@@ -74,7 +74,7 @@ jobs:
         run: |
           git checkout main
           pip3 install scipy
-          python3 .github/scripts/aggregate.py results/ results/summary.md
+          python3 .github/scripts/aggregate.py results/
 
       - name: Write job summary
         if: ${{ always() }}
