@@ -99,8 +99,7 @@ def write_summary(rows: list[BenchmarkRow], sig_rows: list[BenchmarkRow], path: 
     with open(path, "w") as fh:
         if sig_rows:
             fh.write(
-                f"_Showing {len(sig_rows)} of {len(rows)} benchmarks with p < {ALPHA} "
-                f"(Welch's t-test). See results.md for the full table._\n\n"
+                f"_Showing {len(sig_rows)} of {len(rows)} benchmarks with p < {ALPHA} (Welch's t-test)._\n\n"
             )
             fh.write(make_table(sig_rows))
         else:

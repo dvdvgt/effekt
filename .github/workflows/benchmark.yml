@@ -84,7 +84,7 @@ jobs:
         run: |
           echo "## Benchmark Results: ${FEATURE_SHA} vs ${BASELINE_SHA} (baseline)" >> $GITHUB_STEP_SUMMARY
           if [ -f results/summary.md ]; then
-            cat results/summary.md >> $GITHUB_STEP_SUMMARY
+            cat results/results.md >> $GITHUB_STEP_SUMMARY
           fi
           if [ -f results/benchmark.log ]; then
             echo "<details><summary>Full log</summary>" >> $GITHUB_STEP_SUMMARY
@@ -115,7 +115,7 @@ jobs:
             } catch (e) {
               body += `❌ Benchmark failed or produced no output.`;
             }
-            body += `\n📋 [Full log in job summary](${runUrl})`;
+            body += `\n[Full log in job summary](${runUrl})`;
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
